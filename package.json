@@ -1,0 +1,8 @@
+{
+  "name": "slack-if-site-down",
+  "dependencies": {
+    "shelljs":"*",
+    "fs":"*",
+    "slack-node":"*"
+  }
+}
