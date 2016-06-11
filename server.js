@@ -1,8 +1,9 @@
 //
 // config
 //
-webhookUri = "__replace_url__";
+webhookUri = "__replace_url__";   // refer to slack api page for details
 dir = "__replace_working_dir__";
+interval = 30*60*1000;  // 30 min
 
 //
 // run mocha test then report result on slack
@@ -15,25 +16,28 @@ slack.setWebhook(webhookUri);
 
 cd(dir);
 
-exec('./node_modules/.bin/mocha tests | grep " passing\\| failing"', function(code, stdout, stderr) {
-  message = "";
-  if (code == 0) {
-    message = "test results: " + stdout;
-    if (message.indexOf("fail") != -1) {
-      message = "<!channel>: " + message;
-    }
-  } else {
-    message = "<!channel>: exit code:" + code + ", " + stderr;
-  }
+setInterval(function() {
 
-  slack.webhook({
-    channel: "#website-status",
-    username: "incoming-webhook",
-    text: message
-  }, function(err, response) {
-    if (err) {
-      console.log(response);
+  exec('./node_modules/.bin/mocha tests | grep " passing\\| failing"', function(code, stdout, stderr) {
+    message = dir + ":";
+    if (code == 0) {
+      message += stdout;
+      if (message.indexOf("fail") != -1) {
+        message = "<!channel>: " + message;
+      }
+    } else {
+      message = "<!channel>:" + message + " exit code:" + code + ", " + stderr;
     }
+
+    slack.webhook({
+      channel: "#website-status",
+      username: "incoming-webhook",
+      text: message
+    }, function(err, response) {
+      if (err) {
+        console.log(response);
+      }
+    });
   });
 
-});
+}, interval);
