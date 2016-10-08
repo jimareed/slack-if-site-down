@@ -1,9 +1,9 @@
 //
 // config
 //
-webhookUri = "__replace_url__";   // refer to slack api page for details
-dir = "__replace_working_dir__";
-interval = 30*60*1000;  // 30 min
+webhookUri = "__replace_url__";    // refer to slack api page for details
+dir = "__replace_working_dir__";   // directory where your system tests are run
+interval = 12*60*60*1000;  // 12 hours
 
 //
 // run mocha test then report result on slack
